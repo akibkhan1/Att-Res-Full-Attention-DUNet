@@ -106,7 +106,7 @@ def conv_block(inputs, filters, drop_out=0.0):
     if drop_out > 0:
         x = Dropout(drop_out)(x)
 
-    # x = squeeze_excite_block(x)
+    x = squeeze_excite_block(x)
 
     return x
 
@@ -143,9 +143,9 @@ def decoder1(inputs, skip_connections):
 
         print(f"Applying dropout in decoder1 up layer {i + 1}")
         if i < 2:
-            x = conv_block(x, f, drop_out=0.3)
+            x = conv_block(x, f, drop_out=0)
         else:
-            x = conv_block(x, f, drop_out=0.1)
+            x = conv_block(x, f, drop_out=0)
 
     return x
 
@@ -183,9 +183,9 @@ def decoder2(inputs, skip_1, skip_2):
 
         print(f"Applying dropout in decoder2 up layer {i + 1}")
         if i < 2:
-            x = conv_block(x, f, drop_out=0.5)
+            x = conv_block(x, f, drop_out=0)
         else:
-            x = conv_block(x, f, drop_out=0.3)
+            x = conv_block(x, f, drop_out=0)
 
     return x
 
@@ -236,14 +236,14 @@ def ASPP(x, filter):
 def build_model(shape):
     inputs = Input(shape)
     x, skip_1 = encoder1(inputs)
-    x = ASPP(x, 64)
+    #x = ASPP(x, 64)
     x = decoder1(x, skip_1)
     outputs1 = output_block(x)
 
     x = inputs * outputs1
 
     x, skip_2 = encoder2(x)
-    x = ASPP(x, 64)
+    #x = ASPP(x, 64)
     x = decoder2(x, skip_1, skip_2)
     outputs2 = output_block(x)
     outputs = Concatenate()([outputs1, outputs2])
