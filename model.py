@@ -106,7 +106,7 @@ def conv_block(inputs, filters, drop_out=0.0):
     if drop_out > 0:
         x = Dropout(drop_out)(x)
 
-    x = squeeze_excite_block(x)
+    # x = squeeze_excite_block(x)
 
     return x
 
@@ -236,14 +236,14 @@ def ASPP(x, filter):
 def build_model(shape):
     inputs = Input(shape)
     x, skip_1 = encoder1(inputs)
-    #x = ASPP(x, 64)
+    x = ASPP(x, 64)
     x = decoder1(x, skip_1)
     outputs1 = output_block(x)
 
     x = inputs * outputs1
 
     x, skip_2 = encoder2(x)
-    #x = ASPP(x, 64)
+    x = ASPP(x, 64)
     x = decoder2(x, skip_1, skip_2)
     outputs2 = output_block(x)
     outputs = Concatenate()([outputs1, outputs2])
